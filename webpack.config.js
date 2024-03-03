@@ -1,17 +1,19 @@
 const path = require('path');
 const webpack = require('webpack');
 const getPackageJson = require('./scripts/getPackageJson');
+const TerserPlugin = require('terser-webpack-plugin');
 
 const {
   version,
   name,
+  description,
   license,
   repository,
   author
-} = getPackageJson('version', 'name', 'license', 'repository', 'author');
+} = getPackageJson('version', 'name', 'description', 'license', 'repository', 'author');
 
 const banner = `
-  ${name} v${version}
+  ${name} v${version} - ${description}
   ${repository.url}
 
   Copyright (c) ${author.replace(/ *\<[^)]*\> */g, ' ')}
@@ -28,6 +30,14 @@ module.exports = {
     path: path.resolve(__dirname, 'build'),
     library: 'PRSS',
     libraryTarget: 'umd'
+  },
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        extractComments: false
+      })
+    ]
   },
   module: {
     rules: [
