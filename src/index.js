@@ -122,6 +122,50 @@ export const getRawPostItem = (postId) => {
     });
 };
 
+export const stripShortcodes = (html) => {
+    let output = html;
+    const shortcodeRegex =
+        /\[([a-zA-Z]+)=?([a-zA-Z0-9]+)?\](.+?)\[\/[a-zA-Z]+\]?/gi;
+    const matches = [...output.matchAll(shortcodeRegex)];
+    matches.forEach((match) => {
+        const [fullMatch] = match;
+
+        if (fullMatch) {
+            output = output.replace(fullMatch, "");
+        }
+    });
+    return output;
+};
+
+export const truncateString = (str = "", maxLength = 50) => {
+    const output = str.replace(/"/g, "").replace(/\s+/g, " ").trim();
+    if (!output) return null;
+    if (output.length <= maxLength) return output;
+    return `${output.substring(0, maxLength)}...`;
+};
+
+export const removeTagsFromElem = (doc, tags) =>
+    tags.forEach((tag) =>
+        doc.querySelectorAll(tag).forEach((elem) => (elem.innerHTML = ""))
+    );
+
+export const stripTags = (html) => {
+    const rawHtml = stripShortcodes(html);
+    const doc = new DOMParser().parseFromString(rawHtml, "text/html");
+    removeTagsFromElem(doc, ["pre", "h1", "h2"]);
+    return doc.body.textContent || "";
+};
+
+export const setContent = (selector, html) => document.querySelector(selector).innerHTML = html;
+
+export const getItemBySlug = (slug) => {
+    return getItems().find((item) => item.slug === slug);
+};
+
+export const getComponents = (slug) => {
+    return getItems().find((item) => item.template === "component" && (slug ? item.slug === slug : true));
+};
+
 export const getItem = (postId) => {
     return getItems().find((item) => item.uuid === postId);
 };
@@ -154,10 +198,10 @@ export const getItems = (itemTemplate, sortItems) => {
 
             return post
                 ? {
-                      ...post,
-                      path: postPath,
-                      url: getPathUrl(postPath)
-                  }
+                    ...post,
+                    path: postPath,
+                    url: getPathUrl(postPath)
+                }
                 : null;
         });
 
@@ -238,7 +282,6 @@ export const findInStructure = (postId) => {
     };
 
     structure.some(checkNode);
-
     return foundItem;
 };
 
@@ -247,6 +290,11 @@ export const getItemChildren = (itemId) => {
     const structureItemChildren =
         structureItem && structureItem.children ? structureItem.children : [];
     return structureItemChildren.map((childItem) => getItem(childItem.key));
+};
+
+export const getItemChildrenBySlug = (slug) => {
+    const itemId = getItemBySlug(slug);
+    return getItemChildren(itemId);
 };
 
 export const truncateStr = (str, len = 50) => {
