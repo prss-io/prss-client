@@ -156,7 +156,25 @@ export const stripTags = (html) => {
     return doc.body.textContent || "";
 };
 
-export const setContent = (selector, html) => document.querySelector(selector).innerHTML = html;
+export const setContent = (selector, html, createIfMissing = false) => {
+    let element = document.querySelector(selector);
+    let shouldAppend;
+
+    if(!element && createIfMissing && selector.includes(".") && selector.split(".").length === 2){
+        const [tagName, className] = selector.split(".");
+        element = document.createElement(tagName);
+        element.className = className;
+        shouldAppend = true;
+    }
+
+    if(element){
+        element.innerHTML = html;
+    }
+
+    if(shouldAppend){
+        document.body.appendChild(element);
+    }
+};
 
 export const getItemBySlug = (slug) => {
     return getItems().find((item) => item.slug === slug);
