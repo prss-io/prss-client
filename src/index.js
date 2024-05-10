@@ -315,7 +315,7 @@ export const getItemChildren = (itemId) => {
 };
 
 export const getItemChildrenBySlug = (slug) => {
-    const itemId = getItemBySlug(slug);
+    const itemId = getItemBySlug(slug)?.uuid;
     return getItemChildren(itemId);
 };
 
