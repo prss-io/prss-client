@@ -170,6 +170,10 @@ export const getItem = (postId) => {
     return getItems().find((item) => item.uuid === postId);
 };
 
+export const appendToHead = (html) => document.head.innerHTML += html;
+
+export const appendToBody = (html) => document.body.innerHTML += html;
+
 export const getItems = (itemTemplate, sortItems) => {
     if (!PRSSItems) {
         return [];
