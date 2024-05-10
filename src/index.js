@@ -162,8 +162,8 @@ export const getItemBySlug = (slug) => {
     return getItems().find((item) => item.slug === slug);
 };
 
-export const getComponents = (slug) => {
-    return getItems().find((item) => item.template === "component" && (slug ? item.slug === slug : true));
+export const getComponent = (slug) => {
+    return getItems().find((item) => item.template === "component" && item.slug === slug);
 };
 
 export const getItem = (postId) => {
