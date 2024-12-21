@@ -2,7 +2,9 @@ let bufferItem = null;
 let items = null;
 
 export const init = (data) => {
-    bufferItem = data;
+    if(data) {
+        bufferItem = data;
+    }
     window.onload = () => {
         processPRSSLinks();
     };
@@ -10,7 +12,7 @@ export const init = (data) => {
 
 export const getProp = (s) => {
     if (!bufferItem) {
-        throw new Error('PRSS Site Configuration is not defined!');
+        return undefined;
     }
 
     return objGet(s, bufferItem);
@@ -42,9 +44,12 @@ export const getAllProps = () => {
 };
 
 export const getSiteUrl = () => {
-    if (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
-        return location.origin;
-    else return getProp('site.url');
+    const siteUrl = getProp('site.url');
+    if(siteUrl){
+        return siteUrl.replaceAll("localhost:9000", "localhost:3000");
+    } else {
+        return "http://localhost:3000";
+    }
 };
 
 export const getPathUrl = (p = '') => {
