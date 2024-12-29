@@ -25,17 +25,22 @@ const banner = `
 module.exports = {
   mode: 'production',
   entry: './src/index.js',
+  devtool: 'source-map',
   output: {
     filename: 'index.js',
     path: path.resolve(__dirname, 'build'),
     library: 'PRSS',
-    libraryTarget: 'umd'
+    libraryTarget: 'umd',
   },
   optimization: {
     minimize: true,
     minimizer: [
       new TerserPlugin({
-        extractComments: false
+        terserOptions: {
+          format: {
+            comments: /^!/i,
+          },
+        },
       })
     ]
   },

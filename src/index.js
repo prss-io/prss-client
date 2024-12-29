@@ -4,10 +4,9 @@ let items = null;
 export const init = (data) => {
     if(data) {
         bufferItem = data;
+    } else {
+        console.error("Attempted to load empty data", data);
     }
-    window.onload = () => {
-        processPRSSLinks();
-    };
 };
 
 export const getProp = (s) => {
@@ -82,6 +81,11 @@ const getDuration = (timeAgoInSeconds) => {
             return {
                 interval: interval,
                 epoch: name
+            };
+        } else {
+            return {
+                interval: 0,
+                epoch: "minute"
             };
         }
     }
@@ -190,7 +194,13 @@ export const getComponent = (slug) => {
 };
 
 export const getItem = (postId) => {
-    return getItems().find((item) => item.uuid === postId);
+    const item = getItems().find((item) => item.uuid === postId);
+
+    if(!item){
+        console.error(`getItem: No item found with id ${postId}`);
+    } else {
+        return item;
+    }
 };
 
 export const appendToHead = (html) => document.head.innerHTML += html;
@@ -199,6 +209,7 @@ export const appendToBody = (html) => document.body.innerHTML += html;
 
 export const getItems = (itemTemplate, sortItems) => {
     if (!PRSSItems) {
+        console.error("getItems: No PRSSItems found.");
         return [];
     }
 
@@ -206,7 +217,6 @@ export const getItems = (itemTemplate, sortItems) => {
     const structurePaths = getStructurePaths(structure);
 
     const parsedItems =
-        items ||
         structurePaths.map((item) => {
             const path = item.split('/');
             let post;
@@ -327,12 +337,4 @@ export const getItemChildrenBySlug = (slug) => {
 export const truncateStr = (str, len = 50) => {
     if (str.length > len) return str.substring(0, len) + '...';
     else return str;
-};
-
-export const processPRSSLinks = () => {
-    const links = document.querySelectorAll('a[data-prss-path]');
-    links.forEach((link) => {
-        const linkPath = link.getAttribute('data-prss-path');
-        link.setAttribute('href', getPathUrl(linkPath));
-    });
 };

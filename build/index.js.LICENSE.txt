@@ -1,6 +1,6 @@
 /*!
  * 
- *   prss v1.8.2
+ *   prss v2.0.10 - PRSS Client Utilities
  *   https://github.com/prss-io/prss-client
  *
  *   Copyright (c) Francisco Hodge (https://github.com/hodgef)
