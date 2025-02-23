@@ -9,12 +9,12 @@ export const init = (data) => {
     }
 };
 
-export const getProp = (s) => {
-    if (!bufferItem) {
+export const getProp = (s, bufferItemOverride) => {
+    if (!bufferItem && !bufferItemOverride) {
         return undefined;
     }
 
-    return objGet(s, bufferItem);
+    return objGet(s, bufferItemOverride || bufferItem);
 };
 
 export const getJsonProp = (s) => {
@@ -123,8 +123,8 @@ export const getStructurePaths = (nodes, prefix = '', store = []) => {
     return store;
 };
 
-export const getRawPostItem = (postId) => {
-    const prssItems = PRSSItems || [];
+export const getRawPostItem = (postId, itemsOverride) => {
+    const prssItems = itemsOverride || PRSSItems || [];
 
     return prssItems.find((item) => {
         return item.uuid === postId;
@@ -207,8 +207,8 @@ export const appendToHead = (html) => document.head.innerHTML += html;
 
 export const appendToBody = (html) => document.body.innerHTML += html;
 
-export const getItems = (itemTemplate, sortItems) => {
-    if (!PRSSItems) {
+export const getItems = (itemTemplate, sortItems, itemsOverride) => {
+    if (!PRSSItems && !itemsOverride) {
         console.error("getItems: No PRSSItems found.");
         return [];
     }
@@ -242,7 +242,7 @@ export const getItems = (itemTemplate, sortItems) => {
                 : null;
         });
 
-    if (!items && parsedItems.length) {
+    if (!items && parsedItems.length && !itemsOverride) {
         items = parsedItems;
     }
 
@@ -256,6 +256,10 @@ export const getItems = (itemTemplate, sortItems) => {
 
     if (sortItems) {
         outputItems = outputItems.sort((a, b) => b.createdAt - a.createdAt);
+    }
+
+    if(itemsOverride){
+        outputItems = outputItems.filter((item) => !!itemsOverride.find(({ uuid }) => uuid === item.uuid));
     }
 
     return outputItems;
