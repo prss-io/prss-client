@@ -227,7 +227,7 @@ export const getItems = (itemTemplate, sortItems, itemsOverride) => {
                 }
 
                 post = getRawPostItem(postId);
-                return post.slug;
+                return post ? post.slug : '';
             });
 
             const basePostPathArr = mappedPath.slice(2);

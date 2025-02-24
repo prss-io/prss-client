@@ -1,6 +1,6 @@
 {
   "name": "prss",
-  "version": "2.0.12",
+  "version": "2.0.13",
   "description": "PRSS Client Utilities",
   "main": "build/index.js",
   "scripts": {
