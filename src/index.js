@@ -249,9 +249,13 @@ export const getItems = (itemTemplate, sortItems, itemsOverride) => {
     let outputItems = parsedItems;
 
     if (itemTemplate) {
-        outputItems = outputItems.filter(
-            (item) => item.template === itemTemplate
-        );
+        if(Array.isArray(itemTemplate)){
+            outputItems = outputItems.filter((item) => itemTemplate.includes(item.template));
+        } else {
+            outputItems = outputItems.filter(
+                (item) => item.template === itemTemplate
+            );
+        }
     }
 
     if (sortItems) {
